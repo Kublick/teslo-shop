@@ -21,7 +21,7 @@ const CartPage = () => {
 			</Typography>
 			<Grid container>
 				<Grid item xs={12} sm={7}>
-					<CardList />
+					<CardList editable />
 				</Grid>
 				<Grid item xs={12} sm={5}>
 					<Card className="summary-card">
