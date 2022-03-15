@@ -1,6 +1,16 @@
-import { Typography } from '@mui/material';
-import React, { FC } from 'react';
+import {
+	Box,
+	Button,
+	CardActionArea,
+	CardMedia,
+	Grid,
+	Link,
+	Typography,
+} from '@mui/material';
+import NextLink from 'next/link';
+import { FC } from 'react';
 import { initialData } from '../../database/products';
+import { ItemCounter } from '../ui';
 
 interface Props {}
 
@@ -14,7 +24,50 @@ export const CardList: FC<Props> = () => {
 	return (
 		<>
 			{productsInCart.map((product) => (
-				<Typography key={product.slug}>{product.title}</Typography>
+				<Grid container key={product.slug} spacing={2} sx={{ mb: 1 }}>
+					<Grid item xs={3}>
+						{/* Llevar a la pag del producto */}
+						<NextLink href="product/slug" passHref>
+							<Link>
+								<CardActionArea>
+									<CardMedia
+										image={`products/${product.images[0]}`}
+										component="img"
+										alt={product.title}
+										sx={{ bprderRadius: '5px' }}
+									/>
+								</CardActionArea>
+							</Link>
+						</NextLink>
+					</Grid>
+
+					<Grid item xs={7}>
+						<Box display="flex" flexDirection="column">
+							<Typography variant="body1">{product.title}</Typography>
+							<Typography variant="body1">
+								Talla: <strong>M</strong>
+							</Typography>
+							{/* Condicional */}
+							<ItemCounter />
+						</Box>
+					</Grid>
+
+					<Grid
+						item
+						xs={2}
+						display="flex"
+						alignItems="center"
+						flexDirection="column"
+					>
+						<Typography variant="subtitle1" color="secondary">
+							${product.price}
+						</Typography>
+						{/* Editable */}
+						<Button variant="text" color="secondary">
+							Remover
+						</Button>
+					</Grid>
+				</Grid>
 			))}
 		</>
 	);
