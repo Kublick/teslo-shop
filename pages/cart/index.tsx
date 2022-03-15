@@ -7,7 +7,7 @@ import {
 	Grid,
 	Typography,
 } from '@mui/material';
-import { CardList } from '../../components/cart';
+import { CardList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 
 const CartPage = () => {
@@ -30,7 +30,7 @@ const CartPage = () => {
 								Orden
 							</Typography>
 							<Divider sx={{ my: 1 }} />
-							{/* Order Summary */}
+							<OrderSummary />
 							<Box sx={{ mt: 3 }}>
 								<Button color="secondary" className="circular-btn" fullWidth>
 									Checkout

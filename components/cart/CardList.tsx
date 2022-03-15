@@ -12,15 +12,17 @@ import { FC } from 'react';
 import { initialData } from '../../database/products';
 import { ItemCounter } from '../ui';
 
-interface Props {}
-
 const productsInCart = [
 	initialData.products[0],
 	initialData.products[1],
 	initialData.products[2],
 ];
 
-export const CardList: FC<Props> = () => {
+interface Props {
+	editable?: boolean;
+}
+
+export const CardList: FC<Props> = ({ editable = false }) => {
 	return (
 		<>
 			{productsInCart.map((product) => (
@@ -48,7 +50,11 @@ export const CardList: FC<Props> = () => {
 								Talla: <strong>M</strong>
 							</Typography>
 							{/* Condicional */}
-							<ItemCounter />
+							{editable ? (
+								<ItemCounter />
+							) : (
+								<Typography variant="h5">3 items</Typography>
+							)}
 						</Box>
 					</Grid>
 
@@ -63,9 +69,11 @@ export const CardList: FC<Props> = () => {
 							${product.price}
 						</Typography>
 						{/* Editable */}
-						<Button variant="text" color="secondary">
-							Remover
-						</Button>
+						{editable && (
+							<Button variant="text" color="secondary">
+								Remover
+							</Button>
+						)}
 					</Grid>
 				</Grid>
 			))}
