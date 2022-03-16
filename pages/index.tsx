@@ -8,6 +8,7 @@ import {
 import type { NextPage } from 'next';
 import { ShopLayout } from '../components/layouts';
 import { ProductList } from '../components/products';
+import { FullScreenLoading } from '../components/ui';
 import { useProducts } from '../hooks';
 
 const HomePage: NextPage = () => {
@@ -25,7 +26,12 @@ const HomePage: NextPage = () => {
 				<Typography variant="h2" sx={{ mb: 1 }}>
 					Todos los productos{' '}
 				</Typography>
-				{isLoading ? <h1>Cargando</h1> : <ProductList products={products} />}
+
+				{isLoading ? (
+					<FullScreenLoading />
+				) : (
+					<ProductList products={products} />
+				)}
 			</ShopLayout>
 		</>
 	);
