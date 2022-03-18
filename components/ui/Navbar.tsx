@@ -4,20 +4,36 @@ import {
 	Box,
 	Button,
 	IconButton,
+	Input,
+	InputAdornment,
 	Link,
 	Toolbar,
 	Typography,
 } from '@mui/material';
 import NextLink from 'next/link';
-import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
+import {
+	ClearOutlined,
+	SearchOutlined,
+	ShoppingCartOutlined,
+} from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { UIContext } from '../../context';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 
 export const Navbar = () => {
-	const { asPath } = useRouter();
+	const { asPath, push } = useRouter();
 
 	const { toggleSideMenu } = useContext(UIContext);
+
+	const [searchTerm, setSearchTerm] = useState('');
+
+	const [isSearchVisible, setIsSearchVisible] = useState(false);
+
+	const onSearchTerm = () => {
+		if (searchTerm.trim().length === 0) return;
+		push(`/search/${searchTerm}`);
+		setIsSearchVisible(false);
+	};
 
 	return (
 		<AppBar>
@@ -29,7 +45,12 @@ export const Navbar = () => {
 					</Link>
 				</NextLink>
 				<Box sx={{ flex: 1 }} />
-				<Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+				<Box
+					sx={{
+						display: isSearchVisible ? 'none' : { xs: 'none', sm: 'block' },
+					}}
+					className="fadeIn"
+				>
 					<NextLink href="/category/men" passHref>
 						<Link>
 							<Button color={asPath === '/category/men' ? 'primary' : 'info'}>
@@ -53,9 +74,45 @@ export const Navbar = () => {
 					</NextLink>
 				</Box>
 				<Box sx={{ flex: 1 }} />
-				<IconButton>
+
+				<IconButton
+					sx={{ display: { xs: 'flex', sm: 'none' } }}
+					onClick={toggleSideMenu}
+				>
 					<SearchOutlined />
 				</IconButton>
+
+				{isSearchVisible ? (
+					<Input
+						sx={{ display: { xs: 'none', sm: 'flex' } }}
+						className="fadeIn"
+						autoFocus
+						onKeyPress={(e) => (e.key === 'Enter' ? onSearchTerm() : null)}
+						value={searchTerm}
+						onChange={(e) => setSearchTerm(e.target.value)}
+						type="text"
+						placeholder="Buscar..."
+						endAdornment={
+							<InputAdornment position="end">
+								<IconButton
+									aria-label="toggle password visibility"
+									onClick={() => setIsSearchVisible(false)}
+								>
+									<ClearOutlined />
+								</IconButton>
+							</InputAdornment>
+						}
+					/>
+				) : (
+					<IconButton
+						sx={{ display: { xs: 'none', sm: 'flex' } }}
+						onClick={() => setIsSearchVisible(true)}
+						className="fadeIn"
+					>
+						<SearchOutlined />
+					</IconButton>
+				)}
+
 				<NextLink href="cart" passHref>
 					<Link>
 						<IconButton>
