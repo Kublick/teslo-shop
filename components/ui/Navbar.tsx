@@ -113,7 +113,7 @@ export const Navbar = () => {
 					</IconButton>
 				)}
 
-				<NextLink href="cart" passHref>
+				<NextLink href="/cart/" passHref>
 					<Link>
 						<IconButton>
 							<Badge badgeContent={2} color="secondary">
