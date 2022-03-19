@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { GetStaticPaths, NextPage, GetStaticProps } from 'next';
 import { Button, Chip, Grid, Typography } from '@mui/material';
 import { Box } from '@mui/system';
@@ -8,12 +8,17 @@ import { ItemCounter } from '../../components/ui';
 
 import { IProduct, ICartProduct, ISize } from '../../interfaces';
 import { dbProducts } from '../../database';
+import { useRouter } from 'next/router';
+import { CartContext } from '../../context';
 
 interface Props {
 	product: IProduct;
 }
 
 const ProductPage: NextPage<Props> = ({ product }) => {
+	const router = useRouter();
+	const { addProductToCart } = useContext(CartContext);
+
 	const [tempCartProduct, setTempCartProduct] = useState<ICartProduct>({
 		_id: product._id,
 		description: product.description,
@@ -33,23 +38,19 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 		}));
 	};
 
-	const updateQuantity = (e: number) => {
-		if (tempCartProduct.quantity === 1 && e === -1) {
-			return;
-		}
-
-		if (tempCartProduct.quantity === product.inStock && e === 1) {
-			return;
-		}
-
+	const updateQuantity = (value: number) => {
 		setTempCartProduct((currentProduct) => ({
 			...currentProduct,
-			quantity: currentProduct.quantity + e,
+			quantity: currentProduct.quantity + value,
 		}));
 	};
 
 	const onAddProduct = () => {
+		if (!tempCartProduct.size) return;
+		//llamar accion del context para agregar al carrito
+		addProductToCart(tempCartProduct);
 		console.log({ tempCartProduct });
+		// router.push('/cart');
 	};
 
 	return (
