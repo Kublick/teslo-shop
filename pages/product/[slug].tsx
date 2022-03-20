@@ -50,7 +50,7 @@ const ProductPage: NextPage<Props> = ({ product }) => {
 		//llamar accion del context para agregar al carrito
 		addProductToCart(tempCartProduct);
 		console.log({ tempCartProduct });
-		// router.push('/cart');
+		router.push('/cart');
 	};
 
 	return (
