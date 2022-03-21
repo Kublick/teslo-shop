@@ -22,8 +22,8 @@ export default function handler(
 	res: NextApiResponse<Data>,
 ) {
 	switch (req.method) {
-		case 'POST':
-			return loginUSer(req, res);
+		case 'GET':
+			return checkJWT(req, res);
 		default:
 			return res.status(400).json({
 				message: 'Bad Request',
@@ -31,32 +31,37 @@ export default function handler(
 	}
 }
 
-const loginUSer = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-	const { email = '', password = '' } = req.body;
+const checkJWT = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
+	const { token = '' } = req.cookies;
 
+	let userId = '';
+
+	try {
+		userId = await jwt.isValidToken(token);
+		console.log(userId);
+	} catch (error) {
+		console.log(error);
+
+		return res.status(401).json({
+			message: 'Token invalido',
+		});
+	}
 	await db.connect();
-	const user = await User.findOne({ email });
+
+	const user = await User.findById(userId).lean();
 
 	await db.disconnect();
 
 	if (!user) {
 		return res.status(401).json({
-			message: 'Contraseña o correo incorrecto - EMAIL',
+			message: 'No existe usuario con ese ID',
 		});
 	}
 
-	if (!bcrypt.compareSync(password, user.password!)) {
-		return res.status(200).json({
-			message: 'Contraseña o correo incorrecto - PASSWORD',
-		});
-	}
-
-	const { role, name } = user;
-
-	const token = jwt.signToken(user._id, email);
+	const { _id, role, name, email } = user;
 
 	return res.status(200).json({
-		token,
+		token: jwt.signToken(_id, email),
 		user: {
 			email,
 			role,
