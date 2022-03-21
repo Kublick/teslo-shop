@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import {
 	Box,
 	Button,
@@ -14,6 +14,8 @@ import { useForm } from 'react-hook-form';
 import { validations } from '../../utils';
 import { ErrorOutline } from '@mui/icons-material';
 import tesloApi from '../../api/tesloApi';
+import { AuthContext } from '../../context';
+import { useRouter } from 'next/router';
 
 type FormData = {
 	email: string;
@@ -28,27 +30,30 @@ const RegisterPage = () => {
 		formState: { errors },
 	} = useForm<FormData>();
 
-	console.log(errors);
+	const { registerUser } = useContext(AuthContext);
+	const [showError, setShowError] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('');
+	const router = useRouter();
 
-	const onRegisterForm = async ({ email, password, name }: FormData) => {
-		try {
-			const { data } = await tesloApi.post('/user/register', {
-				email,
-				password,
-				name,
-			});
-		} catch (err) {
-			console.log('Error todos los campos son requeridos');
+	const onRegisterForm = async ({ name, email, password }: FormData) => {
+		setShowError(false);
+
+		const { hasError, message } = await registerUser(name, email, password);
+
+		console.log({ hasError, message });
+
+		if (hasError) {
 			setShowError(true);
+			setErrorMessage(message!);
 			setTimeout(() => {
 				setShowError(false);
+				setErrorMessage('');
 			}, 3000);
+			return;
 		}
 
-		console.log({ email, password, name });
+		router.replace('/');
 	};
-
-	const [showError, setShowError] = useState(false);
 
 	return (
 		<AuthLayout title={'Registro'}>

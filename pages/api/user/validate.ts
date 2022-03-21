@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { db } from '../../../database';
 import { User } from '../../../models';
-import bcrypt from 'bcryptjs';
 import { jwt } from '../../../utils';
 
 type Data =
@@ -38,7 +37,6 @@ const checkJWT = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
 	try {
 		userId = await jwt.isValidToken(token);
-		console.log(userId);
 	} catch (error) {
 		console.log(error);
 
