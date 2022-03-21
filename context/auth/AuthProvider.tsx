@@ -4,7 +4,6 @@ import { FC, useEffect, useReducer } from 'react';
 import tesloApi from '../../api/tesloApi';
 import { IUser } from '../../interfaces';
 import { AuthContext, authReducer } from './';
-import { isValidToken } from '../../utils/jwt';
 import { useRouter } from 'next/router';
 
 export interface AuthState {
@@ -27,6 +26,7 @@ export const AuthProvider: FC = ({ children }) => {
 	}, []);
 
 	const checkToken = async () => {
+		if (Cookies.get('token') === undefined) return;
 		try {
 			const { data } = await tesloApi.get('/user/validate');
 			const { token, user } = data;
@@ -86,12 +86,19 @@ export const AuthProvider: FC = ({ children }) => {
 		}
 	};
 
+	const logoutUser = () => {
+		Cookies.remove('token');
+		Cookies.remove('cart');
+		router.reload();
+	};
+
 	return (
 		<AuthContext.Provider
 			value={{
 				...state,
 				loginUser,
 				registerUser,
+				logoutUser,
 			}}
 		>
 			{children}
