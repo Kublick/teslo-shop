@@ -10,7 +10,6 @@ import {
 import NextLink from 'next/link';
 import { FC, useContext } from 'react';
 import { CartContext } from '../../context';
-import { initialData } from '../../database/products';
 import { ItemCounter } from '../ui';
 import { ICartProduct } from '../../interfaces';
 
