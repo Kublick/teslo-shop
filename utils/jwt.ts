@@ -18,6 +18,11 @@ export const isValidToken = (token: string): Promise<string> => {
 			'No se ha definido el seed de JWT revisar variable de entorno',
 		);
 	}
+
+	if (token.length <= 0) {
+		return Promise.reject('Token no valido');
+	}
+
 	return new Promise((resolve, reject) => {
 		try {
 			jwt.verify(token, process.env.JWT_SECRET_SEED || '', (err, payload) => {

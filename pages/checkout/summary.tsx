@@ -9,10 +9,21 @@ import {
 	Typography,
 } from '@mui/material';
 import NextLink from 'next/link';
+import { useContext } from 'react';
 import { CardList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
+import { CartContext } from '../../context';
+import { countries } from '../../utils';
 
 const SummaryPage = () => {
+	const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+	if (!shippingAddress) {
+		return <></>;
+	}
+	const { firstName, lastName, address, address2, zip, city, country, phone } =
+		shippingAddress;
+
 	return (
 		<ShopLayout
 			title={'Resumen de orden'}
@@ -29,7 +40,8 @@ const SummaryPage = () => {
 					<Card className="summary-card">
 						<CardContent>
 							<Typography variant="h2" component="h2">
-								Resumen (3 Productos)
+								Resumen ({numberOfItems}{' '}
+								{numberOfItems === 1 ? 'Producto' : 'Productos'})
 							</Typography>
 							<Divider sx={{ my: 1 }} />
 
@@ -39,11 +51,18 @@ const SummaryPage = () => {
 								</NextLink>
 							</Box>
 							<Typography variant="subtitle1">Direccion de Entrega</Typography>
-							<Typography>Max</Typography>
-							<Typography>Somewhere</Typography>
-							<Typography>Mexicali, 21225</Typography>
-							<Typography>Mexico</Typography>
-							<Typography>+52 111111</Typography>
+							<Typography>
+								{firstName} {lastName}
+							</Typography>
+							<Typography>{address}</Typography>
+							<Typography>{address2}</Typography>
+							<Typography>
+								{city}, {zip}
+							</Typography>
+							<Typography>
+								{countries.find((c) => c.code === country)?.name}
+							</Typography>
+							<Typography>{phone}</Typography>
 							<Divider sx={{ my: 1 }} />
 
 							<Box display="flex" justifyContent="end">

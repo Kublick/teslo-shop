@@ -13,7 +13,6 @@ import { AuthLayout } from '../../components/layouts';
 import { useForm } from 'react-hook-form';
 import { validations } from '../../utils';
 import { ErrorOutline } from '@mui/icons-material';
-import tesloApi from '../../api/tesloApi';
 import { AuthContext } from '../../context';
 import { useRouter } from 'next/router';
 
