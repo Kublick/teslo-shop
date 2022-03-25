@@ -5,7 +5,7 @@ import tesloApi from '../../api/tesloApi';
 import { IUser } from '../../interfaces';
 import { AuthContext, authReducer } from './';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 
 export interface AuthState {
 	isLoggedIn: boolean;
@@ -29,7 +29,7 @@ export const AuthProvider: FC = ({ children }) => {
 				payload: data?.user as IUser,
 			});
 		}
-		console.log(data?.user);
+
 	}, [status, data]);
 
 	// useEffect(() => {
@@ -97,10 +97,21 @@ export const AuthProvider: FC = ({ children }) => {
 		}
 	};
 
-	const logoutUser = () => {
-		Cookies.remove('token');
+	const logoutUser = async() => {
 		Cookies.remove('cart');
-		router.reload();
+		Cookies.remove('firstName')
+		Cookies.remove('lastName')
+		Cookies.remove('address')
+		Cookies.remove('address2')
+		Cookies.remove('zip')
+		Cookies.remove('city')
+		Cookies.remove('country')
+		Cookies.remove('phone')
+
+		await signOut();
+
+		// router.reload();
+		// Cookies.remove('token');
 	};
 
 	return (
