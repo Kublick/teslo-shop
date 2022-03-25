@@ -18,9 +18,21 @@ const Auth_INITIAL_STATE: AuthState = {
 };
 
 export const AuthProvider: FC = ({ children }) => {
+
 	const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
 	const router = useRouter();
 	const { data, status } = useSession();
+
+	useEffect(() => {
+
+		if(status === 'authenticated') {
+			console.log({user: data?.user})
+			dispatch({
+				type: '[Auth] - Login', payload: data?.user as IUser
+			})
+		}
+
+	},[status, data] )
 
 	useEffect(() => {
 		if (status === 'authenticated') {
