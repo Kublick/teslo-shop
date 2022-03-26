@@ -1,7 +1,9 @@
 import { FC, useEffect, useReducer } from 'react';
-import { ICartProduct } from '../../interfaces';
+import { ICartProduct, IOrder, ShippingAddress } from '../../interfaces';
 import { CartContext, cartReducer } from './';
 import Cookie from 'js-cookie';
+import tesloApi from '../../api/tesloApi';
+import axios from 'axios';
 
 export interface CartState {
 	isLoaded: boolean;
@@ -22,17 +24,6 @@ const Cart_INITIAL_STATE: CartState = {
 	total: 0,
 	shippingAddress: undefined,
 };
-
-export interface ShippingAddress {
-	firstName: string;
-	lastName: string;
-	address: string;
-	address2?: string;
-	zip: string;
-	city: string;
-	country: string;
-	phone: string;
-}
 
 export const CartProvider: FC = ({ children }) => {
 	const [state, dispatch] = useReducer(cartReducer, Cart_INITIAL_STATE);
@@ -165,6 +156,54 @@ export const CartProvider: FC = ({ children }) => {
 		});
 	};
 
+	const createOrder = async (): Promise<{
+		hasError: boolean;
+		message: string;
+	}> => {
+		if (!state.shippingAddress) {
+			throw new Error('No shipping address');
+		}
+
+		const body: IOrder = {
+			orderItems: state.cart.map((p) => ({
+				...p,
+				size: p.size!,
+			})),
+			shippingAddress: state.shippingAddress,
+			numberOfItems: state.numberOfItems,
+			subTotal: state.subTotal,
+			tax: state.tax,
+			total: state.total,
+			isPaid: false,
+		};
+		console.log(body);
+
+		try {
+			const { data } = await tesloApi.post<IOrder>('/orders', body);
+
+			//TODO dispatch limpiar state
+
+			return {
+				hasError: false,
+				message: data._id!,
+			};
+
+			console.log(data);
+		} catch (error) {
+			console.error(error);
+			if (axios.isAxiosError(error)) {
+				return {
+					hasError: true,
+					message: error.response?.data.message,
+				};
+			}
+			return {
+				hasError: true,
+				message: 'Error no controlado hable con el admin',
+			};
+		}
+	};
+
 	return (
 		<CartContext.Provider
 			value={{
@@ -173,6 +212,7 @@ export const CartProvider: FC = ({ children }) => {
 				removeCartProduct,
 				updateCartQuantity,
 				updateAddress,
+				createOrder,
 			}}
 		>
 			{children}
