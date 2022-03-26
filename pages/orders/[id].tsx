@@ -1,4 +1,4 @@
-import { CreditScoreOutlined } from '@mui/icons-material';
+import { CreditScoreOutlined, CreditCardOutlined } from '@mui/icons-material';
 import {
 	Box,
 	Card,
@@ -23,37 +23,56 @@ interface Props {
 
 const OrderPage: NextPage<Props> = ({ order }) => {
 	console.log(order);
+	const {
+		_id,
+		numberOfItems,
+		isPaid,
+		shippingAddress,
+		orderItems,
+		subTotal,
+		total,
+		tax,
+	} = order;
+
+	const { firstName, lastName, phone, zip, address, address2, city, country } =
+		shippingAddress;
+
 	return (
 		<ShopLayout
-			title={'Resumen de la orden 1234'}
+			title={'Resumen de la orden'}
 			pageDescription={'Resumen de la orden'}
 		>
 			<Typography variant="h1" component="h1">
-				Orden #1234
+				{_id}
 			</Typography>
-			{/* <Chip
-				sx={{ my: 2 }}
-				label="Pendiente de pago"
-				color="error"
-				variant="outlined"
-				icon={<CreditCardOutlined />}
-			/> */}
-			<Chip
-				sx={{ my: 2 }}
-				label="Orden ya fue pagada"
-				color="success"
-				variant="outlined"
-				icon={<CreditScoreOutlined />}
-			/>
+			{isPaid ? (
+				<Chip
+					sx={{ my: 2 }}
+					label="Orden ya fue pagada"
+					color="success"
+					variant="outlined"
+					icon={<CreditScoreOutlined />}
+				/>
+			) : (
+				<Chip
+					sx={{ my: 2 }}
+					label="Pendiente de pago"
+					color="error"
+					variant="outlined"
+					icon={<CreditCardOutlined />}
+				/>
+			)}
+
 			<Grid container>
 				<Grid item xs={12} sm={7}>
-					<CardList />
+					<CardList products={orderItems} />
 				</Grid>
 				<Grid item xs={12} sm={5}>
 					<Card className="summary-card">
 						<CardContent>
 							<Typography variant="h2" component="h2">
-								Resumen (3 Productos)
+								Resumen ({numberOfItems}{' '}
+								{numberOfItems === 1 ? 'Producto' : 'Productos'} )
 							</Typography>
 							<Divider sx={{ my: 1 }} />
 
@@ -63,30 +82,41 @@ const OrderPage: NextPage<Props> = ({ order }) => {
 								</NextLink>
 							</Box>
 							<Typography variant="subtitle1">Direccion de Entrega</Typography>
-							<Typography>Max</Typography>
-							<Typography>Somewhere</Typography>
-							<Typography>Mexicali, 21225</Typography>
-							<Typography>Mexico</Typography>
-							<Typography>+52 111111</Typography>
+							<Typography>
+								{firstName} {lastName}
+							</Typography>
+							<Typography>
+								{address} {address2 ? `${address2}` : ''}
+							</Typography>
+
+							<Typography>
+								{city}, {zip}
+							</Typography>
+							<Typography>{country}</Typography>
+							<Typography>{phone}</Typography>
 							<Divider sx={{ my: 1 }} />
 
-							<Box display="flex" justifyContent="end">
-								<NextLink href="/cart" passHref>
-									<Link underline="always">Editar</Link>
-								</NextLink>
-							</Box>
-
-							<OrderSummary />
-							<Box sx={{ mt: 3 }}>
+							<OrderSummary
+								orderValues={{
+									numberOfItems: numberOfItems,
+									subTotal: subTotal,
+									total: total,
+									tax: tax,
+								}}
+							/>
+							<Box sx={{ mt: 3 }} display="flex" flexDirection="column">
 								{/* TODO */}
-								<h1>Pagar</h1>
-								<Chip
-									sx={{ my: 2 }}
-									label="Orden ya fue pagada"
-									color="success"
-									variant="outlined"
-									icon={<CreditScoreOutlined />}
-								/>
+								{isPaid ? (
+									<Chip
+										sx={{ my: 2 }}
+										label="Orden ya fue pagada"
+										color="success"
+										variant="outlined"
+										icon={<CreditScoreOutlined />}
+									/>
+								) : (
+									<h1>Pagar</h1>
+								)}
 							</Box>
 						</CardContent>
 					</Card>
