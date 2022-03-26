@@ -18,7 +18,8 @@ import { CartContext } from '../../context';
 import { countries } from '../../utils';
 
 const SummaryPage = () => {
-	const { shippingAddress, numberOfItems } = useContext(CartContext);
+	const { shippingAddress, numberOfItems, createOrder } =
+		useContext(CartContext);
 
 	const router = useRouter();
 
@@ -33,6 +34,10 @@ const SummaryPage = () => {
 	}
 	const { firstName, lastName, address, address2, zip, city, country, phone } =
 		shippingAddress;
+
+	const onCreateOrder = async () => {
+		createOrder();
+	};
 
 	return (
 		<ShopLayout
@@ -83,8 +88,13 @@ const SummaryPage = () => {
 
 							<OrderSummary />
 							<Box sx={{ mt: 3 }}>
-								<Button color="secondary" className="circular-btn" fullWidth>
-									Checkout
+								<Button
+									color="secondary"
+									className="circular-btn"
+									fullWidth
+									onClick={onCreateOrder}
+								>
+									Confirmar Orden
 								</Button>
 							</Box>
 						</CardContent>
