@@ -182,6 +182,7 @@ export const CartProvider: FC = ({ children }) => {
 			const { data } = await tesloApi.post<IOrder>('/orders', body);
 
 			//TODO dispatch limpiar state
+			dispatch({ type: '[Cart] - Order Complete' });
 
 			return {
 				hasError: false,

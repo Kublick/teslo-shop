@@ -18,6 +18,7 @@ export default function handler(
 	switch (req.method) {
 		case 'POST':
 			return createOrder(req, res);
+
 		default:
 			res.status(400).json({ message: 'BadRequest' });
 	}
@@ -46,8 +47,6 @@ export const createOrder = async (
 	await db.connect();
 	const dbProducts = await Product.find({ _id: { $in: productsId } });
 
-	console.log('llega al try', dbProducts);
-
 	try {
 		const subTotal = orderItems.reduce((prev, current) => {
 			const currentPrice = dbProducts.find(
@@ -61,7 +60,8 @@ export const createOrder = async (
 		}, 0);
 
 		const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
-		const backendTotal = subTotal * (taxRate + 1);
+
+		const backendTotal = subTotal * taxRate + subTotal;
 
 		if (total !== backendTotal) {
 			throw new Error('El total no cuadra con el monto');
