@@ -9,13 +9,13 @@ import {
 	Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { ShopLayout } from '../../components/layouts';
 import { countries } from '../../utils';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { CartContext } from '../../context';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 // import { jwt } from '../../utils';
 // import { GetServerSideProps } from 'next';
 
@@ -48,9 +48,15 @@ const AddressPage = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
+		control,
 	} = useForm<FormData>({
 		defaultValues: getAddressFromCookies(),
 	});
+
+	useEffect(() => {
+		reset(getAddressFromCookies());
+	}, [reset]);
 
 	const router = useRouter();
 	const { updateAddress } = useContext(CartContext);
@@ -145,21 +151,29 @@ const AddressPage = () => {
 					<Grid item xs={12} sm={6}>
 						<FormControl variant="filled" fullWidth>
 							<InputLabel>Pais</InputLabel>
-							<Select
-								variant="filled"
-								label="Pais"
-								defaultValue={Cookies.get('country') || countries[0].code}
-								{...register('country', {
-									required: 'El pais es requerido',
-								})}
-								error={!!errors.country}
-							>
-								{countries.map((country) => (
-									<MenuItem key={country.code} value={country.code}>
-										{country.name}
-									</MenuItem>
-								))}
-							</Select>
+
+							<Controller
+								render={({ field }) => (
+									<Select
+										{...field}
+										variant="filled"
+										label="Pais"
+										{...register('country', {
+											required: 'El pais es requerido',
+										})}
+										error={!!errors.country}
+									>
+										{countries.map((country) => (
+											<MenuItem key={country.code} value={country.code}>
+												{country.name}
+											</MenuItem>
+										))}
+									</Select>
+								)}
+								control={control}
+								name="country"
+								defaultValue={countries[0].name}
+							/>
 						</FormControl>
 					</Grid>
 					<Grid item xs={12} sm={6}>

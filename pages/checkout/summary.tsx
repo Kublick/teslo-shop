@@ -8,8 +8,10 @@ import {
 	Link,
 	Typography,
 } from '@mui/material';
+import Cookies from 'js-cookie';
 import NextLink from 'next/link';
-import { useContext } from 'react';
+import { useRouter } from 'next/router';
+import { useContext, useEffect } from 'react';
 import { CardList, OrderSummary } from '../../components/cart';
 import { ShopLayout } from '../../components/layouts';
 import { CartContext } from '../../context';
@@ -17,6 +19,14 @@ import { countries } from '../../utils';
 
 const SummaryPage = () => {
 	const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+	const router = useRouter();
+
+	useEffect(() => {
+		if (!Cookies.get('firstName')) {
+			router.push('/checkout/address');
+		}
+	}, [router]);
 
 	if (!shippingAddress) {
 		return <></>;
