@@ -34,7 +34,7 @@ export const CardList: FC<Props> = ({ editable = false, products = [] }) => {
 		removeCartProduct(product);
 	};
 
-	const productsToShow = products ? products : cart;
+	const productsToShow = products.length >= 1 ? products : cart;
 
 	return (
 		<>
