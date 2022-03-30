@@ -18,21 +18,9 @@ const Auth_INITIAL_STATE: AuthState = {
 };
 
 export const AuthProvider: FC = ({ children }) => {
-
 	const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
 	const router = useRouter();
 	const { data, status } = useSession();
-
-	useEffect(() => {
-
-		if(status === 'authenticated') {
-			console.log({user: data?.user})
-			dispatch({
-				type: '[Auth] - Login', payload: data?.user as IUser
-			})
-		}
-
-	},[status, data] )
 
 	useEffect(() => {
 		if (status === 'authenticated') {
@@ -41,7 +29,15 @@ export const AuthProvider: FC = ({ children }) => {
 				payload: data?.user as IUser,
 			});
 		}
+	}, [status, data]);
 
+	useEffect(() => {
+		if (status === 'authenticated') {
+			dispatch({
+				type: '[Auth] - Login',
+				payload: data?.user as IUser,
+			});
+		}
 	}, [status, data]);
 
 	// useEffect(() => {
@@ -109,16 +105,16 @@ export const AuthProvider: FC = ({ children }) => {
 		}
 	};
 
-	const logoutUser = async() => {
+	const logoutUser = async () => {
 		Cookies.remove('cart');
-		Cookies.remove('firstName')
-		Cookies.remove('lastName')
-		Cookies.remove('address')
-		Cookies.remove('address2')
-		Cookies.remove('zip')
-		Cookies.remove('city')
-		Cookies.remove('country')
-		Cookies.remove('phone')
+		Cookies.remove('firstName');
+		Cookies.remove('lastName');
+		Cookies.remove('address');
+		Cookies.remove('address2');
+		Cookies.remove('zip');
+		Cookies.remove('city');
+		Cookies.remove('country');
+		Cookies.remove('phone');
 
 		await signOut();
 
