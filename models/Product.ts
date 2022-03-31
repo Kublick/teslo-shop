@@ -3,7 +3,7 @@ import { IProduct } from '../interfaces';
 
 const productSchema = new Schema(
 	{
-		description: { type: String, required: true },
+		description: { type: String, required: true, default: '' },
 		images: [{ type: String }],
 		inStock: { type: Number, required: true, default: 0 },
 		price: { type: Number, required: true, default: 0 },
@@ -25,6 +25,7 @@ const productSchema = new Schema(
 				values: ['shirts', 'pants', 'hoodies', 'hats'],
 				message: '{VALUE} no es un tipo válido',
 			},
+			default: 'shirts',
 		},
 		gender: {
 			type: String,
@@ -32,6 +33,7 @@ const productSchema = new Schema(
 				values: ['men', 'women', 'kid', 'unisex'],
 				message: '{VALUE} no es un genero válido',
 			},
+			default: 'women',
 		},
 	},
 	{

@@ -28,6 +28,7 @@ import {
 	RadioGroup,
 	TextField,
 } from '@mui/material';
+import tesloApi from '../../../api/tesloApi';
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats'];
 const validGender = ['men', 'women', 'kid', 'unisex'];
@@ -53,6 +54,7 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
 	const [newTagValue, setNewTagValue] = useState('');
+	const [isSaving, setIsSaving] = useState(false);
 
 	const {
 		handleSubmit,
@@ -83,8 +85,28 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 		};
 	}, [setValue, watch]);
 
-	const onSubmitForm = (data: FormData) => {
-		console.log(data);
+	const onSubmitForm = async (form: FormData) => {
+		if (form.images.length < 2) return alert('Debe subir al menos 2 imagenes');
+		setIsSaving(true);
+
+		try {
+			const { data } = await tesloApi({
+				url: '/admin/products',
+				method: 'PUT',
+				data: form,
+			});
+
+			console.log(data);
+
+			if (!form._id) {
+				//TOOO reload page
+			} else {
+				setIsSaving(false);
+			}
+		} catch (error) {
+			setIsSaving(false);
+			console.log(error);
+		}
 	};
 
 	const onChangeSize = (size: string) => {
@@ -116,7 +138,6 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 			return;
 		}
 		currentTags.push(newTag);
-		// setValue('tags', currentTags, { shouldValidate: true });
 	};
 
 	return (
@@ -132,6 +153,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
 						startIcon={<SaveOutlined />}
 						sx={{ width: '150px' }}
 						type="submit"
+						disabled={isSaving}
 					>
 						Guardar
 					</Button>
