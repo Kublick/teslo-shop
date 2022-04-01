@@ -1,7 +1,7 @@
 import { AdminLayout } from '../../../components/layouts';
-import { CategoryOutlined } from '@mui/icons-material';
+import { AddOutlined, CategoryOutlined } from '@mui/icons-material';
 import useSWR from 'swr';
-import { CardMedia, Grid, Link } from '@mui/material';
+import { Box, Button, CardMedia, Grid, Link } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { IProduct } from '../../../interfaces';
 import NextLink from 'next/link';
@@ -15,11 +15,7 @@ const columns: GridColDef[] = [
 		renderCell: ({ row }: GridRenderCellParams) => {
 			return (
 				<a href={`/product/${row.slug}`} target="_blank" rel="noreferrer">
-					<CardMedia
-						component="img"
-						className="fadeIn"
-						image={`/products/${row.img}`}
-					/>
+					<CardMedia component="img" className="fadeIn" image={`${row.img}`} />
 				</a>
 			);
 		},
@@ -66,6 +62,15 @@ const ProductsPage = () => {
 			subTitle={'Mantenimiento de Productos'}
 			icon={<CategoryOutlined />}
 		>
+			<Box display="flex" justifyContent="end" sx={{ mb: 2 }}>
+				<Button
+					startIcon={<AddOutlined />}
+					color="secondary"
+					href="/admin/products/new"
+				>
+					Crear Producto
+				</Button>
+			</Box>
 			<Grid container className="fadeIn">
 				<Grid item xs={12} sx={{ heigth: '650px', width: '100%' }}>
 					<DataGrid
